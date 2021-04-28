@@ -1,13 +1,13 @@
 class Api::V1::ProductsController < ApplicationController
 
-  before_action :set_product, only: [:update, :destroy]
+  before_action :set_product, only: [:show, :update, :destroy]
 
   def index
     render json: Product.all
   end
   #------------------------------------------
   def show
-
+    render json: @product
   end
   #------------------------------------------
   def create

@@ -1,3 +1,5 @@
+require './lib/contact/contact_bot'
+
 class Api::V1::ContactsController < ApplicationController
 
   before_action :set_contact, only: [:update, :destroy]
@@ -17,6 +19,8 @@ class Api::V1::ContactsController < ApplicationController
     else
       render json: @contact.errors, status: :unprocessable_entity
     end
+
+    ContactBot.new.message(@contact)
   end
   #-----------------------------------------------------------------------
   def update
