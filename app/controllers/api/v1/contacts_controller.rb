@@ -3,6 +3,7 @@ require './lib/contact/contact_bot'
 class Api::V1::ContactsController < ApplicationController
 
   before_action :set_contact, only: [:update, :destroy]
+  before_action :authenticate_api_user!, only: [:index, :show, :update, :destroy]
 
   def index
     render json: Contact.all

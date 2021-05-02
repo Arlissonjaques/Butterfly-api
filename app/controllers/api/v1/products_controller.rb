@@ -1,6 +1,7 @@
 class Api::V1::ProductsController < ApplicationController
 
   before_action :set_product, only: [:show, :update, :destroy]
+  before_action :authenticate_api_user!, only: [:create, :update, :destroy]
 
   def index
     render json: Product.all
