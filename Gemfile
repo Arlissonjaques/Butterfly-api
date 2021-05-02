@@ -44,3 +44,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Telegram bot
 gem 'telegram-bot-ruby'
+# Authentication
+gem 'devise_token_auth'
