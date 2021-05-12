@@ -1,4 +1,4 @@
-require './lib/contact/contact_bot'
+require './lib/integration/contact/contact_bot'
 
 class Api::V1::ContactsController < ApplicationController
 
@@ -17,11 +17,11 @@ class Api::V1::ContactsController < ApplicationController
 
     if @contact.save
       render json: @contact, status: :created
+      Integration::Contact::ContactBot.new.message(@contact)
     else
       render json: @contact.errors, status: :unprocessable_entity
     end
 
-    ContactBot.new.message(@contact)
   end
   #-----------------------------------------------------------------------
   def update
