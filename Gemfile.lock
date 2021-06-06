@@ -96,6 +96,13 @@ GEM
     equalizer (0.0.11)
     erubi (1.10.0)
     erubis (2.7.0)
+    factory_bot (6.2.0)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.2.0)
+      factory_bot (~> 6.2.0)
+      railties (>= 5.0.0)
+    faker (2.18.0)
+      i18n (>= 1.6, < 2)
     faraday (1.4.1)
       faraday-excon (~> 1.1)
       faraday-net_http (~> 1.0)
@@ -272,6 +279,8 @@ DEPENDENCIES
   bootsnap (>= 1.4.4)
   byebug
   devise_token_auth
+  factory_bot_rails
+  faker
   listen (~> 3.3)
   pg (~> 1.1)
   puma (~> 5.0)
@@ -288,4 +297,4 @@ RUBY VERSION
    ruby 2.7.1p83
 
 BUNDLED WITH
-   1.17.3
+   2.1.4
