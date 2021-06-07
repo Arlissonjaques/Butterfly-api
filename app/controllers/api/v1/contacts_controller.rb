@@ -9,9 +9,6 @@ class Api::V1::ContactsController < ApplicationController
     render json: Contact.all
   end
 
-  def show
-  end
-
   def create
     @contact = Contact.new(contact_params)
 
