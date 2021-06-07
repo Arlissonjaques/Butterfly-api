@@ -37,6 +37,8 @@ class Api::V1::CategoriesController < ApplicationController
 
   def set_category
     @category = Category.find(params[:id])
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { message: e.message }, status: :not_found
   end
   #--------------------------------------------------------
   def category_params

@@ -40,6 +40,8 @@ class Api::V1::ContactsController < ApplicationController
 
   def set_contact
     @contact = Contact.find(params[:id])
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { message: e.message }, status: :not_found
   end
   #-----------------------------------------------------------------------
   def contact_params
