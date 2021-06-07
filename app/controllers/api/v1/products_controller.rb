@@ -6,11 +6,11 @@ class Api::V1::ProductsController < ApplicationController
   def index
     render json: Product.all
   end
-  #------------------------------------------
+
   def show
     render json: @product
   end
-  #------------------------------------------
+
   def create
     @product = Product.new(product_params)
 
@@ -20,7 +20,7 @@ class Api::V1::ProductsController < ApplicationController
       render json: @product.errors, status: :unprocessable_entity
     end
   end
-  #------------------------------------------
+
   def update
     if @product.update(product_params)
       render json: @product, status: :ok
@@ -28,7 +28,7 @@ class Api::V1::ProductsController < ApplicationController
       render json: @product.errors, status: :unprocessable_entity
     end
   end
-  #------------------------------------------
+
   def destroy
     @product.destroy
   end
@@ -40,7 +40,7 @@ class Api::V1::ProductsController < ApplicationController
   rescue ActiveRecord::RecordNotFound => e
     render json: { message: e.message }, status: :not_found
   end
-  #-------------------------------------------
+
   def product_params
     params.permit(:name, :color, :description, :category_id)
   end

@@ -6,11 +6,11 @@ class Api::V1::CategoriesController < ApplicationController
   def index
     render json: Category.all
   end
-  #------------------------------------------------------
+
   def show
     render json: @category.products
   end
-  #------------------------------------------------------
+
   def create
     @category = Category.new(category_params)
 
@@ -20,7 +20,7 @@ class Api::V1::CategoriesController < ApplicationController
       render json: @category.errors, status: :unprocessable_entity
     end
   end
-  #-------------------------------------------------------
+
   def update
     if @category.update(category_params)
       render json: @category, status: :ok
@@ -28,7 +28,7 @@ class Api::V1::CategoriesController < ApplicationController
       render json: @category.errors, status: :unprocessable_entity
     end
   end
-  #-------------------------------------------------------
+
   def destroy
     @category.destroy
   end
@@ -40,7 +40,7 @@ class Api::V1::CategoriesController < ApplicationController
   rescue ActiveRecord::RecordNotFound => e
     render json: { message: e.message }, status: :not_found
   end
-  #--------------------------------------------------------
+
   def category_params
     params.permit(:name, :product_id)
   end
