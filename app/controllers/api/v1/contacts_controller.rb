@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require './lib/integration/contact/contact_bot'
-
 class Api::V1::ContactsController < ApplicationController
   def create
     @contact = Contact.new(contact_params)
