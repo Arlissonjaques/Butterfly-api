@@ -1,17 +1,13 @@
+# frozen_string_literal: true
+
 module Integration
   module Contact
     require 'telegram/bot'
 
     class ContactBot
-
-      def initialize
-        @token = '1700987771:AAHcAIZAa3AHR89mTf9eSdxdBT4MpEFBIEY'
-        @chat_id = '990065756'
-      end
-
       def send_message(base_message)
-        Telegram::Bot::Client.run(@token) do |bot|
-          bot.api.send_message(chat_id: @chat_id, text: base_message)
+        Telegram::Bot::Client.run(ENV['BOT_TOKEN']) do |bot|
+          bot.api.send_message(chat_id: ENV['CHAT_ID'], text: base_message)
         end
       end
 
@@ -26,7 +22,7 @@ module Integration
   Messagem:
   #{model.message}
   "
-        self.send_message(base_message)
+        send_message(base_message)
       end
     end
   end
