@@ -42,6 +42,6 @@ class Api::V1::CategoriesController < ApplicationController
   end
 
   def category_params
-    params.permit(:name, :product_id)
+    params.permit(:name)
   end
 end
