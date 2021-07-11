@@ -21,5 +21,6 @@ RSpec.describe Product, type: :model do
 
   describe 'associations' do
     it { should belong_to(:category) }
+    it { should have_one(:product_picture) }
   end
 end
