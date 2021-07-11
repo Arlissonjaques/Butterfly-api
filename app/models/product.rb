@@ -12,6 +12,7 @@
 #
 class Product < ApplicationRecord
   belongs_to :category
+  has_one :product_picture
 
   validates :name, :color, :description, presence: true
 end
