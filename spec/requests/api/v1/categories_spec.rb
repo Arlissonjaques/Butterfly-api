@@ -3,20 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe 'Categories', type: :request do
-  before do
-    @user = create(:user)
-    @login_url = '/api/auth/sign_in'
-    @login_params = {
-      email: @user.email,
-      password: @user.password
-    }
-  end
-
   describe '.categories' do
     # index
     it 'get all categories' do
       get api_v1_categories_path
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     # show
@@ -24,40 +15,38 @@ RSpec.describe 'Categories', type: :request do
       let!(:category) { create(:category) }
 
       it 'with existing category' do
-        get "/api/v1/categories/#{category.id}"
-        expect(response).to have_http_status(200)
+        get api_v1_category_path(category.id)
+        expect(response).to have_http_status(:ok)
       end
 
       it 'with non-existent category' do
-        get '/api/v1/categories/1000'
-        expect(response).to have_http_status(404)
+        get api_v1_category_path(-1)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
     # create
     describe 'creating category' do
       context 'with authentication' do
-        before { post @login_url, params: @login_params }
-
         it 'with correct parameters' do
-          post '/api/v1/categories', params: { "name": build(:category).name }, headers: headers
+          post api_v1_categories_path, params: { "name": build(:category).name }, headers: authentication_headers
           expect(response).to have_http_status(201)
         end
 
         it 'with invalid parameters' do
-          post '/api/v1/categories', params: {}, headers: headers
+          post api_v1_categories_path, params: {}, headers: authentication_headers
           expect(response).to have_http_status(422)
         end
       end
 
       context 'no authentication' do
         it 'with correct parameters' do
-          post '/api/v1/categories', params: { "name": build(:category).name }
+          post api_v1_categories_path, params: { "name": build(:category).name }
           expect(response).to have_http_status(401)
         end
 
         it 'with invalid parameters' do
-          post '/api/v1/categories', params: {}
+          post api_v1_categories_path, params: {}
           expect(response).to have_http_status(401)
         end
       end
@@ -66,18 +55,18 @@ RSpec.describe 'Categories', type: :request do
     # update
     describe 'updating category' do
       context 'with authentication' do
-        before { post @login_url, params: @login_params }
         let!(:category) { create(:category) }
 
         it 'with correct params' do
-          put "/api/v1/categories/#{category.id}", params: { "name": build(:category).name }, headers: headers
-          expect(response).to have_http_status(200)
+          put api_v1_category_path(category.id), params: { "name": build(:category).name },
+                                                 headers: authentication_headers
+          expect(response).to have_http_status(:ok)
         end
 
         # TODO: este status deveria ser 422 nao?
         it 'with invalid params' do
-          put "/api/v1/categories/#{category.id}", params: {}, headers: headers
-          expect(response).to have_http_status(200)
+          put api_v1_category_path(category.id), params: {}, headers: authentication_headers
+          expect(response).to have_http_status(:ok)
         end
       end
 
@@ -85,13 +74,13 @@ RSpec.describe 'Categories', type: :request do
         let!(:category) { create(:category) }
 
         it 'with correct params' do
-          put "/api/v1/categories/#{category.id}", params: { "name": build(:category).name }
-          expect(response).to have_http_status(401)
+          put api_v1_category_path(category.id), params: { "name": build(:category).name }
+          expect(response).to have_http_status(:unauthorized)
         end
 
         it 'with invalid params' do
-          put "/api/v1/categories/#{category.id}", params: {}
-          expect(response).to have_http_status(401)
+          put api_v1_category_path(category.id), params: {}
+          expect(response).to have_http_status(:unauthorized)
         end
       end
     end
@@ -99,17 +88,16 @@ RSpec.describe 'Categories', type: :request do
     # delete
     describe 'excluded categories' do
       context 'with authentication' do
-        before { post @login_url, params: @login_params }
         let!(:category) { create(:category) }
 
         it 'existing category' do
-          delete "/api/v1/categories/#{category.id}", headers: headers
-          expect(response).to have_http_status(204)
+          delete api_v1_category_path(category.id), headers: authentication_headers
+          expect(response).to have_http_status(:no_content)
         end
 
         it 'non-existent category' do
-          delete '/api/v1/categories/-1', headers: headers
-          expect(response).to have_http_status(404)
+          delete api_v1_category_path(-1), headers: authentication_headers
+          expect(response).to have_http_status(:not_found)
         end
       end
 
@@ -117,24 +105,15 @@ RSpec.describe 'Categories', type: :request do
         let!(:category) { create(:category) }
 
         it 'existing category' do
-          delete "/api/v1/categories/#{category.id}"
-          expect(response).to have_http_status(401)
+          delete api_v1_category_path(category.id)
+          expect(response).to have_http_status(:unauthorized)
         end
 
         it 'non-existent category' do
-          delete '/api/v1/categories/-1'
-          expect(response).to have_http_status(404)
+          delete api_v1_category_path(-1)
+          expect(response).to have_http_status(:not_found)
         end
       end
     end
-  end
-
-  # Assists
-  def headers
-    {
-      'uid' => response.headers['uid'],
-      'client' => response.headers['client'],
-      'access-token' => response.headers['access-token']
-    }
   end
 end
