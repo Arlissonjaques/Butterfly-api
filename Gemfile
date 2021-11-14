@@ -37,6 +37,7 @@ group :development, :test do
   gem 'simplecov', require: false
   # A Ruby gem to load environment variables from `.env`.
   gem 'dotenv-rails'
+  gem 'pry'
 end
 
 group :development do
