@@ -38,6 +38,7 @@ group :development, :test do
   # A Ruby gem to load environment variables from `.env`.
   gem 'dotenv-rails'
   gem 'pry'
+  gem 'database_cleaner-active_record'
 end
 
 group :development do
