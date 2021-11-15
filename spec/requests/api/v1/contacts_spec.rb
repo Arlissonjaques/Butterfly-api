@@ -3,56 +3,24 @@
 require 'rails_helper'
 
 RSpec.describe 'Contacts', type: :request do
-  before do
-    @user = create(:user)
-    @login_url = '/api/auth/sign_in'
-    @login_params = {
-      email: @user.email,
-      password: @user.password
-    }
-  end
-
   describe '.contacts' do
     describe 'Create' do
-      context 'with authentication' do
-        before { post @login_url, params: @login_params }
-        let!(:p) { create(:contact) }
-        let!(:params) do
-          { firstname: p.firstname, lastname: p.lastname, email: p.email, message: p.message,
-            product_id: p.product_id }
-        end
+      context 'with valid params' do
+        let!(:product) { create(:product) }
+        let(:contact_params) { attributes_for(:contact, product_id: product.id) }
 
-        it 'with correct parameters' do
-          post '/api/v1/contacts', params: params, headers: headers
+        it 'should create the contact' do
+          post api_v1_contacts_path, params: contact_params
           expect(response).to have_http_status(201)
         end
+      end
 
-        it 'with invalid parameters' do
-          post '/api/v1/contacts', params: { firstname: '' }, headers: headers
+      context 'with invalid params' do
+        it "shouldn't create the contact" do
+          post api_v1_contacts_path
           expect(response).to have_http_status(422)
         end
       end
-
-      context 'no authentication' do
-        it 'with correct parameters' do
-          post '/api/v1/categories', params: { "name": build(:category).name }
-          expect(response).to have_http_status(401)
-        end
-
-        it 'with invalid parameters' do
-          post '/api/v1/categories', params: {}
-          expect(response).to have_http_status(401)
-        end
-      end
     end
-  end
-
-  # Assists
-  def headers
-    {
-      'uid' => response.headers['uid'],
-      'client' => response.headers['client'],
-      'access-token' => response.headers['access-token']
-    }
   end
 end
