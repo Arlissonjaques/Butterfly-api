@@ -3,18 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe 'Products', type: :request do
-  before do
-    @user = create(:user)
-    @login_url = '/api/auth/sign_in'
-    @login_params = {
-      email: @user.email,
-      password: @user.password
-    }
-  end
-
   # index
   it 'get all products' do
-    get '/api/v1/products'
+    get api_v1_products_path
     expect(response).to have_http_status(200)
   end
 
@@ -23,30 +14,29 @@ RSpec.describe 'Products', type: :request do
     let!(:product) { create(:product) }
 
     it 'with existing product' do
-      get "/api/v1/products/#{product.id}"
+      get api_v1_product_path(product.id)
       expect(response).to have_http_status(200)
     end
 
     it 'with non-existent product' do
-      get '/api/v1/products/-1'
+      get api_v1_product_path(-1)
       expect(response).to have_http_status(404)
     end
   end
 
   # create
   describe 'creating product' do
-    before { post @login_url, params: @login_params }
     let!(:p) { create(:product) }
 
     context 'with authentication' do
       it 'with correct parameters' do
         params = { name: p.name, color: p.color, description: p.description, category_id: p.category_id }
-        post '/api/v1/products', params: params, headers: headers
+        post api_v1_products_path, params: params, headers: authentication_headers
         expect(response).to have_http_status(201)
       end
 
       it 'with invalid parameters' do
-        post '/api/v1/products', params: {}, headers: headers
+        post api_v1_products_path, params: {}, headers: authentication_headers
         expect(response).to have_http_status(422)
       end
     end
@@ -54,12 +44,12 @@ RSpec.describe 'Products', type: :request do
     context 'no authentication' do
       it 'with correct parameters' do
         params = { name: p.name, color: p.color, description: p.description, category_id: p.category_id }
-        post '/api/v1/products', params: params
+        post api_v1_products_path, params: params
         expect(response).to have_http_status(401)
       end
 
       it 'with invalid parameters' do
-        post '/api/v1/products', params: {}
+        post api_v1_products_path, params: {}
         expect(response).to have_http_status(401)
       end
     end
@@ -68,21 +58,20 @@ RSpec.describe 'Products', type: :request do
   # update
   describe 'updating product' do
     context 'with authentication' do
-      before { post @login_url, params: @login_params }
       let!(:product) { create(:product) }
 
       it 'with correct params' do
-        put "/api/v1/products/#{product.id}", params: { "name": build(:product).name }, headers: headers
+        put api_v1_product_path(product.id), params: { "name": build(:product).name }, headers: authentication_headers
         expect(response).to have_http_status(200)
       end
 
       it 'with invalid params' do
-        put "/api/v1/products/#{product.id}", params: { name: '' }, headers: headers
+        put api_v1_product_path(product.id), params: { name: '' }, headers: authentication_headers
         expect(response).to have_http_status(422)
       end
 
       it 'with empty parameters' do
-        put "/api/v1/products/#{product.id}", params: {}, headers: headers
+        put api_v1_product_path(product.id), params: {}, headers: authentication_headers
         expect(response).to have_http_status(200)
       end
     end
@@ -91,17 +80,17 @@ RSpec.describe 'Products', type: :request do
       let!(:product) { create(:product) }
 
       it 'with correct params' do
-        put "/api/v1/products/#{product.id}", params: { "name": build(:product).name }
+        put api_v1_product_path(product.id), params: { "name": build(:product).name }
         expect(response).to have_http_status(401)
       end
 
       it 'with invalid params' do
-        put "/api/v1/products/#{product.id}", params: { "name": '' }
+        put api_v1_product_path(product.id), params: { "name": '' }
         expect(response).to have_http_status(401)
       end
 
       it 'with empty parameters' do
-        put "/api/v1/products/#{product.id}", params: {}
+        put api_v1_product_path(product.id), params: {}
         expect(response).to have_http_status(401)
       end
     end
@@ -110,16 +99,15 @@ RSpec.describe 'Products', type: :request do
   # delete
   describe 'excluded product' do
     context 'with authentication' do
-      before { post @login_url, params: @login_params }
       let!(:product) { create(:product) }
 
       it 'existing product' do
-        delete "/api/v1/products/#{product.id}", headers: headers
+        delete api_v1_product_path(product.id), headers: authentication_headers
         expect(response).to have_http_status(204)
       end
 
       it 'non-existent product' do
-        delete '/api/v1/products/-1', headers: headers
+        delete api_v1_product_path(-1), headers: authentication_headers
         expect(response).to have_http_status(404)
       end
     end
@@ -128,23 +116,14 @@ RSpec.describe 'Products', type: :request do
       let!(:product) { create(:product) }
 
       it 'existing product' do
-        delete "/api/v1/products/#{product.id}"
+        delete api_v1_product_path(product.id)
         expect(response).to have_http_status(401)
       end
 
       it 'non-existent product' do
-        delete '/api/v1/products/-1'
+        delete api_v1_product_path(-1)
         expect(response).to have_http_status(404)
       end
     end
-  end
-
-  # Assists
-  def headers
-    {
-      'uid' => response.headers['uid'],
-      'client' => response.headers['client'],
-      'access-token' => response.headers['access-token']
-    }
   end
 end
